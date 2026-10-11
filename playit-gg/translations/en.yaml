@@ -1,0 +1,7 @@
+configuration:
+  secret_key:
+    name: Playit agent secret key
+    description: >-
+      Create an agent at https://playit.gg/account/agents/new-docker and paste
+      its secret key here. Save and restart the add-on after changing the key.
+      Leave blank only when using an existing /etc/playit/playit.toml file.

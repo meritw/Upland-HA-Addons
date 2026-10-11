@@ -1,3 +1,18 @@
 #!/usr/bin/with-contenv bashio
 
-playitd
+set -e
+
+secret_key="$(bashio::config 'secret_key')"
+
+if [[ -n "$secret_key" ]]; then
+    bashio::log.info "Starting Playit with the configured agent secret."
+    exec playitd --secret "$secret_key" --platform-docker
+fi
+
+if [[ -s /etc/playit/playit.toml ]]; then
+    bashio::log.info "Starting Playit with the saved agent configuration."
+    exec playitd --secret-path /etc/playit/playit.toml --platform-docker
+fi
+
+bashio::log.fatal "Set secret_key in the add-on Configuration tab using https://playit.gg/account/agents/new-docker, then restart the add-on."
+exit 1

@@ -21,18 +21,48 @@ Original inspiration thanks to the [Benjamin589 PR](https://github.com/williamco
 **Add repository**
 <!-- markdownlint-enable MD036 -->
 
-[![Add repo](https://my.home-assistant.io/badges/supervisor_add_addon_repository.svg)](https://my.home-assistant.io/redirect/supervisor_add_addon_repository/?repository_url=https://github.com/UplandJacob/Upland-HA-Addons)
+[![Add repo](https://my.home-assistant.io/badges/supervisor_add_addon_repository.svg)](https://my.home-assistant.io/redirect/supervisor_add_addon_repository/?repository_url=https://github.com/meritw/Upland-HA-Addons)
 
-or go to the **Add-on Store -> repositories** and add: <https://github.com/UplandJacob/Upland-HA-Addons>
+or go to the **Add-on Store -> repositories** and add: <https://github.com/meritw/Upland-HA-Addons>
 
 **Then install:**
 
-[![Show dashboard of add-on.](https://my.home-assistant.io/badges/supervisor_addon.svg)](https://my.home-assistant.io/redirect/supervisor_addon/?addon=d78ad65c_playitgg)
+Select **Playit.gg Agent** from this repository in the Add-on Store. This fork
+builds the image on your Home Assistant machine during installation or update,
+so the first install can take several minutes.
 
 ## Setup
 
 1. If you don't already have a Playit.gg account, head over to [Playit.gg](https://playit.gg) and sign up.
-2. Follow the install instructions above and start it, then go to the "Log" tab.
-3. Find the claim link, copy and paste it into a browser, and go through the claim process to add your agent to your Playit.gg account.
-4. Check the add-on logs to ensure the add-on has successfully connected to your Playit.gg account.
-5. Back [on the website](https://playit.gg/account/agents), click on the agent, then "+Add Tunnel" to expose whatever services you want to the internet.
+2. While signed in, open [Create a Docker agent](https://playit.gg/account/agents/new-docker)
+   and create an agent. Copy the agent secret key shown on that page (the value
+   used for `SECRET_KEY` in the Docker instructions).
+3. Install this fork's add-on and open its **Configuration** tab. Paste the key
+   into **Playit agent secret key** (`secret_key`) and save.
+4. Start or restart the add-on. Check the **Log** tab for
+   `playit connected; tunnels loaded`. No claim link is needed with this setup.
+5. On the [Playit agents page](https://playit.gg/account/agents), select this
+   agent and add your Minecraft tunnel. Use the Minecraft server's address and
+   published port on your Home Assistant machine as the local destination.
+
+The YAML configuration looks like this:
+
+```yaml
+secret_key: "PASTE_YOUR_AGENT_SECRET_HERE"
+```
+
+Enter your real key only in Home Assistant's Configuration tab. The field is
+masked in the form and the startup script does not print its value. Save and
+restart the add-on whenever you change the key.
+
+An existing `/etc/playit/playit.toml` file is still supported when `secret_key`
+is blank. A configured `secret_key` takes precedence over that file. If neither
+is available, the log explains how to configure the key instead of waiting for
+a setup client.
+
+## Updating this fork
+
+After these changes are merged, check for updates in the Add-on Store and update
+to version **1.3.2**. If you installed the upstream repository's add-on, add this
+fork's repository and install its copy instead; repository add-ons have separate
+identities. Stop the old Playit add-on before starting this copy.
